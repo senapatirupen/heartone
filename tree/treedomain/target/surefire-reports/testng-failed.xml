@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite verbose="0" name="Failed suite [com.apress.hibernaterecipes.chapter1.model.Recipe1SessionTest]">
+  <test name="Command line test(failed)">
+    <classes>
+      <class name="com.apress.hibernaterecipes.chapter1.model.Recipe1SessionTest">
+        <methods>
+          <include name="showSafeExecution"/>
+          <include name="clearData"/>
+          <include name="testUpdateDetachedObject"/>
+          <include name="testDelete"/>
+          <include name="testCreateObjectGraph"/>
+          <include name="testCreate"/>
+          <include name="testUpdate"/>
+        </methods>
+      </class> <!-- com.apress.hibernaterecipes.chapter1.model.Recipe1SessionTest -->
+    </classes>
+  </test> <!-- Command line test(failed) -->
+</suite> <!-- Failed suite [com.apress.hibernaterecipes.chapter1.model.Recipe1SessionTest] -->
