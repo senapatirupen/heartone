@@ -1,0 +1,81 @@
+Person
+Person User Name
+Person Password
+Person Name(first name, middle name, last name)
+Person DOB
+Person Email ID
+Person Phon Number, Mobile Number, Fax Number
+Person sex, religion, Mother Tongue, language known, blood group, height, complexion
+Person Secrate question, secrate answer
+Person Photo, Digital Signeture
+Person Adress(Permanent, Present, Birth Place)
+Person Skills(Personal, Professional, Socity, All over, Exctra, Hobbies, Exctra Activities)
+Person Office Details
+    Office Name, Office Description, Office Address, Office Number, Office fax number, Office Establish Date, Office History, Office Head person name,
+    Designation, doj, releaving date, experiance, Annual Package, Salary stucture, Office Reporting person name & phone number, Office email id, 
+    Working hours in office, Office colligue details(name, number, desgnation, relation in months, relation type), Office Work details( assign work name, 
+    duration, team size, your responsibilities), Your office id, Your roles & responsebilities, 
+Person College/School Details
+    
+Person Business Details
+Person Bank Details
+Person Contact Details(Friends, Family, Collegues, Closers) 
+Person Family Details(Father, Mother, Sister, Brother, Wife, Son, Daughter)
+Person Goods Details
+Person Education Details
+Person Personal Details
+Person Property Details
+Person Finance Details
+Person Document Details
+Person Girlfriends/Boyfriends/Both Details
+Person Traveling Details
+Person Personal Experience Details(health, finance, love, book, coock, travel, location, Occassion, goods, gadgets  ...)
+Person Multimedia Details(Audio, Video, Picture, Softwares)
+Person Bill Details(credit card bill, elictric bill, phone bill, water bill, TVCable bill, internet bill, rent bill, children(school, tusion, dance, etc bill)
+Person Must Have Details(accountNumber, emailId, phoneNumber, identificationNumber, dateOfBirth)
+
+
+Person
+    pid, firstName, middleName, lastName, dob, userName, password, emailId, sex, religion, motherTongue, bloodGroup, height, complexion, photo, digitalSigneture, secreteQuestion, secreteAnswer, phoneNumber, mobileNumber, faxNumber, version
+PersonDetail
+    pid, sex, religion, motherTongue, bloodGroup, height, complexion, version
+Identification
+    pid, photo, digitalSigneture, secreteQuestion, secreteAnswer, version
+personContact
+    pid, phoneNumber, mobileNumber, faxNumber, version
+personAddress
+    pid, permanentAddress(contains addressId as input), presentAddress(contains addressId as input), birthPlace(contains addressId as input)
+address
+    addressId, country, state, city, twonVillage, landMark, zipcode, isPermanent, isPresent, isBirth, isPurchase, isCollegeSchool, isOffice, version
+personGoods
+    pid, regular, special, bigAmount, homeUse, personalUse, officeUse, gift, lend, borrow, education
+Goods
+    pid, goodsId, name, image, actualPrice, purchasePrice, todaysPrice, salePrice, dop, dos, doLost, doLend, doBorrow, functionality, purchaseReason, usageType(Educational, Gift, Official, etc..), purchaseAddress, purpose, usage,  catagory(Asset, Liability), validityFrom, validityUpTo, insuranceDetails, uploadGoodsDocuments, custmerCareNumber, description, Exctra, version
+Cards
+    cardId, cardName, cardType, issueDate, issueLocation, validFrom, validTo, description, otherDetails, verson
+TablesDetails
+    tableId, tableName, tableDescription, isDeleted, keyColumns, columns
+ColumnDetails
+    tabeleId, columnId, columnName, columnDescription, isDeleted, isKeyColumn
+Book
+    BookId, Name, Author, Country, Language, Series, Genre, Publisher, Publication Date, Media Type, Pages, ISBN, OCLC, Dewey Decimal, LC Class
+	Selling Price
+	Reviews
+	    BookId, Name, Review info, Ratting
+	BookPrice
+	    BookId, Purchase_price, Sale_parice, Tax, Purchase_percent, Sale_percent, Profit, InStock_duration, Is_stock_available,
+		expected_stock_available, Is_delevered, Deliver_date, Shipping_address
+	    
+Movies
+    Directed By, Produced By, Screenplay By, Story By, Based On, Starring, Music By, Cinematography, Edited By, Production company, Distributed by , Release dates, Country, Language, Budget, Box Office
+Games
+Sports
+	
+
+Privacy, Security, Wesite usage terms, Important Notice, Our Corporate Commitment, @2013 Personal Detail Ltd. All rights reserved., Find your nearest, View Demo,
+Feedback, FAQs, Instant Callback, Site map, Service charges & fees, Articles, How-to Guide, Archieves, Accessibility Help, Legal, Email Us, Select Language, 
+more, less, view all, learn more, go to, Reviews, Join the Discussion, Share Your Ideas, Read our Blog, View Views, Careers, Customer Engagement, Services, Solutions, 
+Technical Support, Call-1-800-425-1000, Get downloads, Affiliated, Investor, Relations, Facebook, YouTube, Google+, Twitter, LinkdIn, Rss, News, Download iMobile, 
+
+PMP3S(Personal MP3 Store)
+
