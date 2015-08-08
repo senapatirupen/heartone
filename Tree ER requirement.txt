@@ -1,0 +1,38 @@
+Tree Requirement
+----------------
+person
+    peid, name, user_name, dob, email_id, first_name, last_name, middle_name, mobile_number, alternate_mobile_number,
+	password, re_password
+
+sign_up
+    siid, first_name, middle_name, last_name, dob, email_id, mobile_number, password, re_passwords
+	
+person_address
+    peid, adid, country, state, city, twon_village, landmark, zipcode
+
+address_type
+    adid, is_permanent, is_present, is_birth_place, is_purchase_place, is_college_or_school, is_office,	
+	
+common_column
+    created_date, updated_date, is_active, version, attr_one, attr_two, is_attr_one, is_attr_two, short_description, long_description
+
+table_info
+    taid, name, description
+
+tree_detail
+    trid, name, life_duration, color, type(shrubs, Herb, etc), height,
+
+tree_images
+    trid, irimid, image_one, image_two, image_three, image_four, image_five, 
+
+tree_price_detail
+    trid, purchase_price, sale_parice, tax, purchase_percent, sale_percent, profit,
+
+shipping_detail
+    shid, orid, is_delevered, deliver_date, expected_delivery_date, shipping_address, 
+
+order_detail
+    orid, name, quantity, price,  
+  	
+stock_detail
+    stid, name, is_available, quantity, expected_finish_date, expected_in_stock_date, in_stock_duration, expected_stock_available, 

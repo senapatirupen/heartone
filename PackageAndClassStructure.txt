@@ -1,0 +1,4 @@
+Package Structure
+-----------------
+Common methods in Domain Class: toString(), hashCode()
+Common methods in Dao Class: create(), add(), delete(), update(), modify(), findById(), findByName(), list()
