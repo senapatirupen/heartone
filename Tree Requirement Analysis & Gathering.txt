@@ -7,3 +7,13 @@ Term & Conditions
     . Deliver product in time.
 	. Give a new one if tr expire before warrenty live period.
 	. Mention tr life duration.
+	
+Menu Items:
+    > Fruit
+    > Herbs
+    > Flowers
+    > Shrubs
+    > Houseplants
+    > Medicinal
+    > Decoration
+    > Vegetables
