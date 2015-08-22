@@ -15,7 +15,7 @@ public class SessionManager {
     private static SessionFactory buildSessionFactory() {
         try {
             // Create the SessionFactory from hibernate.cfg.xml
-          Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
+          Configuration configuration = new Configuration().configure("mysql.cfg.xml");
           ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
               .applySettings(configuration.getProperties())
               .build();

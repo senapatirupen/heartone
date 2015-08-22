@@ -2,7 +2,9 @@ package com.apress.hibernaterecipes.chapter1.model;
 
 import com.apress.hibernaterecipes.chapter1.model.Book;
 import com.apress.hibernaterecipes.chapter1.model.Publisher;
+import com.teddygu.treedomain.api.domain.TreeDetail;
 import com.teddygu.treedomain.api.util.SessionManager;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -50,6 +52,14 @@ public class Recipe1SessionTest {
     query.executeUpdate();
   }
 
+  @Test
+  public void testCreateTreeDetails(){
+	  Session session = SessionManager.getSessionFactory().openSession();
+	  Transaction txn = session.beginTransaction();
+	  TreeDetail treeDetail = new TreeDetail();
+	  treeDetail.setName("Rose");
+  }
+
   /**
    * This test verifies creation of a single Publisher.
    * <p/>
@@ -82,6 +92,25 @@ public class Recipe1SessionTest {
     assertEquals(publisher.getName(), publisher1.getName());
     tx.commit();
     session.close();
+  }
+
+  @Test
+  public void testCreateOne(){
+	  Session session = SessionManager.getSessionFactory().openSession();
+	  Transaction txn = session.beginTransaction();
+	  Publisher publisher = new Publisher();
+	  publisher.setCode("pbp");
+	  publisher.setName("PBP");
+	  publisher.setAddress("SSB Building");
+	  session.save(publisher);
+	  txn.commit();
+	  session.close();
+	  session = SessionManager.getSessionFactory().openSession();
+	  txn = session.beginTransaction();
+	  Publisher publisher1 = (Publisher) session.get(Publisher.class, "pbps");
+	  assertEquals(publisher.getName(), publisher1.getName());
+	  txn.commit();
+	  session.close();
   }
 
   /**

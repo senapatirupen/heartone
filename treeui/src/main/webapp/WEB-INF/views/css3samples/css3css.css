@@ -1,0 +1,122 @@
+body {
+font-size: 13px;
+font-family: arial,tahoma,verdana,sans-serif;
+color: #333;
+min-width: 978px;
+text-align: left;
+width: 100%;
+position: static;
+overflow-y: auto;
+background:url(bg-body.jpg);
+}
+p {
+	color: orange;
+	text-align: center;
+}
+
+p.one {
+    border-style: solid;
+    border-width: 5px;
+}
+
+header {
+    border: 2px solid red;
+	width: 1024px;
+	margin: 0 auto;
+}
+nav {
+	border: 2px solid red;
+	width: 1024px;
+	height: 40px;
+    margin: 0 auto;
+}
+nav ul {
+	margin: 0px auto;
+	padding: 0px;
+}
+nav li {
+	display: inline;
+}
+nav li a {
+	display: block;
+	float: left;
+	width: 100px;
+	height: 15px;
+	line-height: 15px;
+	font-size: 13px;
+	text-transform: uppercase;
+	font-weight: bold;
+	color: #0ac;
+	text-decoration: none;
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	text-align: center;
+	margin-right: 1px;
+	background: url(nav-bg1.png) no-repeat left top;
+	padding: 10px 0px 10px 0px;
+}
+
+nav li a:hover {
+	background: url(nav-bg2.png) no-repeat left top;
+	text-transform: capitalize;
+	color: #fff;
+}
+
+footer {
+	border: 2px solid red;
+	width: 1024px;
+	font-family: 'PT_Sans-Web-Regular';
+	font-weight: normal;
+	margin: 0 auto;
+	padding: 0;
+}
+
+footer div {
+	background: #7a7a7a;
+	margin: 0;
+	overflow: hidden;
+	padding: 23px 20px;
+}
+footer > div:first-child {
+	-webkit-box-shadow: 1px 0px 3px rgba(52, 50, 50, 0.5);
+	-moz-box-shadow: 1px 0px 3px rgba(52, 50, 50, 0.5);
+	box-shadow: 1px 0px 3px rgba(52, 50, 50, 0.5);
+}
+footer div ul {
+	margin: 0;
+	padding: 0;
+}
+footer div ul li {
+	border-top: 1px solid #9a9a9a;
+	font-size: 13px;
+	list-style: none;
+	margin: 0 0 5px;
+	padding: 5px 0 0;
+}
+footer div ul li:first-child {
+	border: 0;
+}
+footer div > div {
+	float: left;
+	margin: 0 0 0 60px;
+	padding: 0;
+	width: 180px;
+}
+footer div > div:first-child {
+	margin: 0;
+}
+footer div > div h3 {
+	color: #fff;
+	font-family: 'Lato-Light';
+	font-size: 18px;
+	font-weight: normal;
+	margin: 0;
+	padding: 0 0 14px;
+	text-transform: capitalize;
+}
+footer div .tweets ul li a {
+	color: #fff;
+	display: block;
+	line-height: 24px;
+	text-decoration: none;
+}
+
