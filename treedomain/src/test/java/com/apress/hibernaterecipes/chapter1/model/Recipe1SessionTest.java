@@ -21,16 +21,16 @@ import java.sql.Date;
 
 import static org.testng.Assert.*;
 
-public class Recipe1SessionTest {
+public class Recipe1SessionTest {/*
 //  final static Logger logger = LoggerFactory.getLogger(Recipe1SessionTest.class);
 
-  /**
+  *//**
    * This method simply iterates through the entity types, calling
    * a utility method that removes all available entries.
    * <p/>
    * It is meant to be called before each test method, so that the
    * tests have a blank slate with which to work.
-   */
+   *//*
   @BeforeMethod
   public void clearData() {
     Session session = SessionManager.getSessionFactory().openSession();
@@ -41,12 +41,12 @@ public class Recipe1SessionTest {
     session.close();
   }
 
-  /**
+  *//**
    * This method executes an HQL delete with a constraint.
    *
    * @param session    the active session in which the delete occurs
    * @param constraint the constraint for the delete statement
-   */
+   *//*
   private void clearAll(Session session, String constraint) {
     Query query = session.createQuery("delete " + constraint);
     query.executeUpdate();
@@ -60,7 +60,7 @@ public class Recipe1SessionTest {
 	  treeDetail.setName("Rose");
   }
 
-  /**
+  *//**
    * This test verifies creation of a single Publisher.
    * <p/>
    * It does so in two phases: it first persists a single Publisher, then
@@ -73,7 +73,7 @@ public class Recipe1SessionTest {
    * which will throw an {@link org.hibernate.ObjectNotFoundException}
    * if the entity is not found. In this test, this exception is a
    * failure condition, so we aren't worried about trapping it.
-   */
+   *//*
   @Test
   public void testCreate() {
     Session session = SessionManager.getSessionFactory().openSession();
@@ -113,7 +113,7 @@ public class Recipe1SessionTest {
 	  session.close();
   }
 
-  /**
+  *//**
    * This method demonstrates the persistence of object graphs.
    * <p/>
    * It does so by creating a Publisher, and then a Book, setting
@@ -132,7 +132,7 @@ public class Recipe1SessionTest {
    * Note that {@link org.hibernate.Session#refresh(Object)} is used
    * to tell Hibernate to use the publisher with this information
    * from the database.
-   */
+   *//*
   @Test
   public void testCreateObjectGraph() {
     Session session = SessionManager.getSessionFactory().openSession();
@@ -191,12 +191,12 @@ public class Recipe1SessionTest {
     session.close();
   }
 
-  /**
+  *//**
    * This method demonstrates a Hibernate update, which
    * is accomplished by merely updating a managed object
    * while it is being managed by an active
    * {@link org.hibernate.Session}.
-   */
+   *//*
   @Test
   public void testUpdate() {
     Session session = SessionManager.getSessionFactory().openSession();
@@ -225,7 +225,7 @@ public class Recipe1SessionTest {
     session.close();
   }
 
-  /**
+  *//**
    * This method demonstrates an update of an object that is
    * <strong>not</strong> managed by an active
    * {@link org.hibernate.Session}. It does so by using
@@ -236,7 +236,7 @@ public class Recipe1SessionTest {
    * If the object in the database has precedence over the
    * object in memory, {@link org.hibernate.Session#refresh(Object)}
    * is used instead.
-   */
+   *//*
   @Test
   public void testUpdateDetachedObject() {
     Session session = SessionManager.getSessionFactory().openSession();
@@ -268,7 +268,7 @@ public class Recipe1SessionTest {
     session.close();
   }
 
-  /**
+  *//**
    * This method shows how to delete a specific object by using
    * the primary key value.
    * <p/>
@@ -278,7 +278,7 @@ public class Recipe1SessionTest {
    * attempts to read the object throuh
    * {@link org.hibernate.Session#get(Class, java.io.Serializable)},
    * which will return <code>null</code> if the object is not found.
-   */
+   *//*
   @Test
   public void testDelete() {
     Session session = SessionManager.getSessionFactory().openSession();
@@ -309,12 +309,12 @@ public class Recipe1SessionTest {
     session.close();
   }
 
-  /**
+  *//**
    * This method creates a Publisher, copied from the
    * {@link Recipe1SessionTest#testCreate}
    * method. This method includes proper exception handling, which
    * isn't present in the other recipes for brevity's sake.
-   */
+   *//*
   @Test
   public void showSafeExecution() {
     Session session = null;
@@ -348,5 +348,5 @@ public class Recipe1SessionTest {
         session.close();
       }
     }
-  }
+  }*/
 }

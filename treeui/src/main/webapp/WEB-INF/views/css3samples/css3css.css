@@ -24,6 +24,8 @@ header {
 	width: 1024px;
 	margin: 0 auto;
 }
+
+/* Navigation style start */
 nav {
 	border: 2px solid red;
 	width: 1024px;
@@ -60,7 +62,181 @@ nav li a:hover {
 	text-transform: capitalize;
 	color: #fff;
 }
+/* Navigation style end */
 
+section {
+	border: 2px solid red;
+	width: 1024px;
+	height: 960px;
+	font-family: 'PT_Sans-Web-Regular';
+	font-weight: normal;
+	margin: 0 auto;
+	padding: 0;
+}
+
+section .left-side-bar {
+	border: 2px solid red;
+	width: 199px;
+	height: 800px;
+	float: left;
+	font-family: 'PT_Sans-Web-Regular';
+	font-weight: normal;
+	margin: 0 auto;
+	padding: 0;
+}
+
+section .left-side-bar .left-side-menu {
+	float:left;
+	border: 2px solid red;
+	margin: 0 auto;
+	padding: 0;
+}
+
+section .left-side-bar .left-side-menu ul{
+	float:left;
+	list-style: none;
+	padding: 12px;
+}
+
+section .left-side-bar .left-side-menu li{
+	float:left;
+	list-style: none;
+	outside none;
+}
+
+section .left-side-bar .left-side-menu .widgets ul {
+	float:left;
+	list-style: none;
+	outside none;
+	background: url('slider-shadows.png');
+	margin: 0 auto;
+	padding: 0px 2px;
+	border: 1px solid red;
+}
+
+section .left-side-bar .left-side-menu .widgets a {
+color: #156106;
+font-size: 13px;
+padding-left: 0px;
+display: block;
+text-transform: uppercase;
+text-decoration: none;
+line-height: 36px;
+overflow: hidden;
+}
+section .left-side-bar .left-side-menu .widgets a:hover {
+	color: #ffffff;
+}
+section .left-side-bar .left-side-menu .widgets a span {
+	padding-left: 12px;
+	display: block;
+}
+
+section .container {
+	border: 2px solid red;
+	width: 817px;
+	height: 800px;
+	float: left;
+	font-family: 'PT_Sans-Web-Regular';
+	font-weight: normal;
+	margin: 0 auto;
+	padding: 0;
+}
+
+section .container .containerHeader{
+	border: 2px solid red;
+	width: 817px;
+	height: 99px;
+	float: left;
+	font-family: 'PT_Sans-Web-Regular';
+	font-weight: normal;
+	margin: 0 auto;
+	padding: 0;
+}
+
+section .container .contains{
+	border: 2px solid red;
+	width: 817px;
+	height: 651px;
+	float: left;
+	font-family: 'PT_Sans-Web-Regular';
+	font-weight: normal;
+	margin: 0 auto;
+	padding: 0;
+}
+
+section .container .navigate{
+	border: 2px solid red;
+	width: 817px;
+	height: 38px;
+	float: left;
+	font-family: 'PT_Sans-Web-Regular';
+	font-weight: normal;
+	margin: 0 auto;
+	padding: 0;
+}
+
+.contains h2 {
+    padding: 17px 0 14px;
+    font-weight: normal;
+    margin-bottom: 21px;
+}
+.contains .product {
+    float: left;
+    display: inline;
+    padding-right: 5px;
+    padding-bottom: 34px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    width: 186px;
+}
+.contains .last {
+    padding-right: 0;
+}
+.contains .product a {
+    background: url('product-bg.png') no-repeat 0 0;
+    display: block;
+    width: 186px;
+    height: 250px;
+}
+.contains .product span {
+    display: block;
+}
+.contains .product .title {
+    font-size: 12px;
+    color: #a8a8a8;
+    line-height: 20px;
+    padding: 13px 0 6px;
+    font-weight: bold;
+}
+.contains .product img {
+    padding-right: 2px;
+}
+.contains .product .number {
+    font-size: 11px;
+    color: #7cfa02;
+    line-height: 20px;
+    padding: 4px 0;
+}
+.contains .product .price {
+    font-weight: bold;
+    font-size: 18px;
+    color: #fff;
+}
+.contains .product .price span {
+    color: #a8a8a8;
+    display: inline;
+}
+.contains .product a:hover {
+    background-position: 0 -250px;
+    text-decoration: none;
+}
+.contains .product a:hover .title {
+    color: #fff;
+}
+
+/* Footer style start */
 footer {
 	border: 2px solid red;
 	width: 1024px;
@@ -119,4 +295,4 @@ footer div .tweets ul li a {
 	line-height: 24px;
 	text-decoration: none;
 }
-
+/* Footer style end */

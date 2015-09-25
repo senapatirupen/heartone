@@ -1,0 +1,57 @@
+section .left-side-bar {
+	border: 2px solid red;
+	width: 199px;
+	height: 800px;
+	float: left;
+	font-family: 'PT_Sans-Web-Regular';
+	font-weight: normal;
+	margin: 0 auto;
+	padding: 0;
+}
+
+section .left-side-menu {
+	float:left;
+	border: 2px solid red;
+	margin: 0 auto;
+	padding: 0;
+}
+
+section .left-side-menu ul{
+	float:left;
+	list-style: none;
+	padding: 12px;
+}
+
+section .left-side-menu li{
+	float:left;
+	list-style: none;
+	outside none;
+}
+
+section .widgets ul {
+	float:left;
+	list-style: none;
+	outside none;
+	background: url('slider-shadows.png');
+	margin: 0 auto;
+	padding: 0px 2px;
+	border: 1px solid red;
+}
+
+section .widgets a {
+color: #156106;
+font-size: 13px;
+padding-left: 0px;
+display: block;
+text-transform: uppercase;
+text-decoration: none;
+line-height: 36px;
+overflow: hidden;
+}
+section .widgets a:hover {
+	color: #ffffff;
+}
+section .widgets a span {
+	padding-left: 12px;
+	display: block;
+}

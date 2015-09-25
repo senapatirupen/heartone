@@ -12,38 +12,39 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 @Entity
-@Table(name="ADDRESS", schema="netheart")
+@Table(name="SHIPPING_DETAIL", schema="netheart")
 public class ShippingDetail {
 
 	@Id
 	@GeneratedValue(generator="TableIdGen")
 	@GenericGenerator(strategy="org.hibernate.id.enhanced.TableGenerator", name="TableIdGen", parameters={
-			@Parameter(name = "table_name", value = "SDID_GENERATE"),
-			@Parameter(name = "segment_value", value = "sdId"),
+			@Parameter(name = "table_name", value = "SHDEID_GENERATE"),
+			@Parameter(name = "segment_value", value = "shdeId"),
 			@Parameter(name = "optimizer", value = "pooled"),
 			@Parameter(name = "initial_value", value = "1000"),
 			@Parameter(name = "increment_size", value = "10")
 		})
-	private long sdId;
+	private long shdeId;
 	@Column(name = "IS_DELEVERED", nullable = false, unique = false)
 	private String isDelevered;
 	@Column(name = "DELIVER_DATE", nullable = false, unique = false)
 	private Date deliverDate;
 	@Column(name = "EXPECTED_DELIVERY_DATE", nullable = false, unique = false)
 	private Date expectedDeliveryDate;
-	@Column(name = "SHIPPING_ADDRESS", nullable = false, unique = false)
+	@Column(name = "SHIPPING_ADDRESS", nullable = true, unique = false)
 	private String shippingAddress;
+
 	/**
-	 * @return the sdId
+	 * @return the shdeId
 	 */
-	public long getSdId() {
-		return sdId;
+	public long getShdeId() {
+		return shdeId;
 	}
 	/**
-	 * @param sdId the sdId to set
+	 * @param shdeId the shdeId to set
 	 */
-	public void setSdId(long sdId) {
-		this.sdId = sdId;
+	public void setShdeId(long shdeId) {
+		this.shdeId = shdeId;
 	}
 	/**
 	 * @return the isDelevered

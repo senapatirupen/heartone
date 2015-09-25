@@ -6,15 +6,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
-@Entity(name="netheart")
+@Entity
 @Table(name="TREE_DETAIL", schema="netheart")
 public class TreeDetail {
 
@@ -32,11 +27,11 @@ public class TreeDetail {
 	private String name;
 	@Column(nullable=false, unique=true, name="TREE_LIFE_DURATION")
 	private String lifeDuration;
-	@Column(nullable=false, unique=true, name="TYPE")
+	@Column(nullable=false, unique=false, name="TYPE")
 	private String type;
-	@Column(nullable=false, unique=true, name="HEIGHT")
+	@Column(nullable=false, unique=false, name="HEIGHT")
 	private String height;
-	@Column(nullable=false, unique=true, name="SHORT_DESC")
+	@Column(nullable=true, unique=false, name="SHORT_DESC")
 	private String shortDescription;
 	/**
 	 * @return the trdeId
@@ -121,45 +116,4 @@ public class TreeDetail {
 	public void setShortDescription(String shortDescription) {
 		this.shortDescription = shortDescription;
 	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((trdeId == null) ? 0 : trdeId.hashCode());
-		return result;
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		TreeDetail other = (TreeDetail) obj;
-		if (trdeId == null) {
-			if (other.trdeId != null)
-				return false;
-		} else if (!trdeId.equals(other.trdeId))
-			return false;
-		return true;
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "TreeDetail [name=" + name + ", lifeDuration=" + lifeDuration
-				+ "]";
-	}
-
 }

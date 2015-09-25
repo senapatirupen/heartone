@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.apress.hibernaterecipes.chapter1.model.Recipe1SessionTest
--------------------------------------------------------------------------------
-Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.359 sec

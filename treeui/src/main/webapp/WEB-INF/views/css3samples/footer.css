@@ -1,0 +1,60 @@
+/* Footer style start */
+footer {
+	border: 2px solid red;
+	width: 1024px;
+	font-family: 'PT_Sans-Web-Regular';
+	font-weight: normal;
+	margin: 0 auto;
+	padding: 0;
+}
+
+footer div {
+	background: #7a7a7a;
+	margin: 0;
+	overflow: hidden;
+	padding: 23px 20px;
+}
+footer > div:first-child {
+	-webkit-box-shadow: 1px 0px 3px rgba(52, 50, 50, 0.5);
+	-moz-box-shadow: 1px 0px 3px rgba(52, 50, 50, 0.5);
+	box-shadow: 1px 0px 3px rgba(52, 50, 50, 0.5);
+}
+footer div ul {
+	margin: 0;
+	padding: 0;
+}
+footer div ul li {
+	border-top: 1px solid #9a9a9a;
+	font-size: 13px;
+	list-style: none;
+	margin: 0 0 5px;
+	padding: 5px 0 0;
+}
+footer div ul li:first-child {
+	border: 0;
+}
+footer div > div {
+	float: left;
+	margin: 0 0 0 60px;
+	padding: 0;
+	width: 180px;
+}
+footer div > div:first-child {
+	margin: 0;
+}
+footer div > div h3 {
+	color: #fff;
+	font-family: 'Lato-Light';
+	font-size: 18px;
+	font-weight: normal;
+	margin: 0;
+	padding: 0 0 14px;
+	text-transform: capitalize;
+}
+footer div .tweets ul li a {
+	color: #fff;
+	display: block;
+	line-height: 24px;
+	text-decoration: none;
+}
+/* Footer style end */

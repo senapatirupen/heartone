@@ -18,38 +18,40 @@ public class StockDetail {
 	@Id
 	@GeneratedValue(generator="TableIdGen")
 	@GenericGenerator(strategy="org.hibernate.id.enhanced.TableGenerator", name="TableIdGen", parameters={
-			@Parameter(name = "table_name", value = "STID_GENERATE"),
-			@Parameter(name = "segment_value", value = "stId"),
+			@Parameter(name = "table_name", value = "STDEID_GENERATE"),
+			@Parameter(name = "segment_value", value = "stdeId"),
 			@Parameter(name = "optimizer", value = "pooled"),
 			@Parameter(name = "initial_value", value = "1000"),
 			@Parameter(name = "increment_size", value = "10")
 	})
-	private Long stId;
+	private Long stdeId;
 	@Column(name = "NAME", nullable = false, unique = false)
 	private String name;
 	@Column(name = "IS_AVAILABLE", nullable = false, unique = false)
 	private Boolean isAvailable;
 	@Column(name = "QUANTITY", nullable = false, unique = false)
 	private String quantity;
-	@Column(name = "EXPECTED_FINISH_DATE", nullable = false, unique = false)
+	@Column(name = "EXPECTED_FINISH_DATE", nullable = true, unique = false)
 	private Date expectedFinishDate;
-	@Column(name = "EXPECTED_IN_STOCK_DATE", nullable = false, unique = false)
+	@Column(name = "EXPECTED_IN_STOCK_DATE", nullable = true, unique = false)
 	private Date expectedInStockDate;
-	@Column(name = "IN_STOCK_DURATION", nullable = false, unique = false)
+	@Column(name = "IN_STOCK_DURATION", nullable = true, unique = false)
 	private Date inStockDuration;
-	@Column(name = "QUANTITY_CONSUMPTION_PER_DATE", nullable = false, unique = false)
+	@Column(name = "QUANTITY_CONSUMPTION_PER_DATE", nullable = true, unique = false)
 	private String quantityConsumptionPerDate;
+
+
 	/**
-	 * @return the stId
+	 * @return the stdeId
 	 */
-	public Long getStId() {
-		return stId;
+	public Long getStdeId() {
+		return stdeId;
 	}
 	/**
-	 * @param stId the stId to set
+	 * @param stdeId the stdeId to set
 	 */
-	public void setStId(Long stId) {
-		this.stId = stId;
+	public void setStdeId(Long stdeId) {
+		this.stdeId = stdeId;
 	}
 	/**
 	 * @return the name

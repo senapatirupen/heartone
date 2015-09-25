@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory name="tree_jdbc_session_factory">
+		<!-- JDBC Configuration -->
+		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="connection.url">jdbc:mysql://localhost:3306/netheart</property>
+		<property name="connection.username">root</property>
+		<property name="connection.password">MySql</property>
+		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+		<!-- JNDI connection configuration <property name="hibernate.connection.datasource">local_jboss</property>
+			<property name="hibernate.transaction.factory_class">org.hibernate.transaction.JTATransaction</property>
+			<property name="hibernate.transaction.manager_lookup_class">org.hibernate.transaction.WeblogicTransactionManagerLookup</property> -->
+		<property name="hibernate.show_sql">true</property>
+		<property name="hibernate.format_sql">true</property>
+		<property name="hibernate.hbm2ddl.auto">create</property>
+		<!-- Enabling Live Statistics -->
+		<property name="hibernate.generate_statistics">true</property>
+		<!-- Enabling connection pooling -->
+		<property name="hibernate.c3p0.min_size">5</property>
+		<property name="hibernate.c3p0.max_size">10</property>
+		<property name="hibernate.c3p0.timeout">500</property>
+		<property name="hibernate.c3p0.max_statements">50</property>
+		<property name="hibernate.c3p0.acquire_increment">1</property>
+		<property name="hibernate.c3p0.idle_test_period">5000</property>
+		<!-- Enabling query cache -->
+		<property name="hibernate.cache.use_query_cache">true</property>
+		<!-- Enabling second label cache using EHCache -->
+		<property name="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</property>
+		<!-- Configuring mapping hbm file location -->
+		<!-- <mapping resource="com/teddygu/treedomain/api/model/TreeInfo.hbm.xml" />
+		<mapping resource="com/apress/hibernaterecipes/chapter1/model/Book.hbm.xml" />
+		<mapping resource="com/apress/hibernaterecipes/chapter1/model/Publisher.hbm.xml" /> -->
+		<!-- Configuring mapping annotation file location -->
+		<mapping class="com.teddygu.treedomain.api.domain.TreeDetail"/>
+		<mapping class="com.teddygu.treedomain.api.domain.Address"/>
+		<mapping class="com.teddygu.treedomain.api.domain.OrderDetail"/>
+		<mapping class="com.teddygu.treedomain.api.domain.Person"/>
+		<mapping class="com.teddygu.treedomain.api.domain.ShippingDetail"/>
+		<mapping class="com.teddygu.treedomain.api.domain.StockDetail"/>
+		<mapping class="com.teddygu.treedomain.api.domain.TreePriceDetail"/>
+	</session-factory>
+</hibernate-configuration>

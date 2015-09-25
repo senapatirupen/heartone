@@ -1,0 +1,217 @@
+Spring Transaction + JPA Transaction Manager + Hibernate ORM
+------------------------------------------------------------
+List of Files:
+Location: src/java/main/resources/META-INF/persistance.xml
+or for webapplication Location: webapp/META-INF/persistance.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+	version="1.0">
+	<persistence-unit name="treeweb" transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<!-- the JNDI data source -->
+		<!-- <non-jta-data-source>java:jdbc/treewebMySql</non-jta-data-source> -->
+		<class>com.teddygu.treedomain.api.domain.TreeDetail</class>
+		<properties>
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value="true" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+			<property name="hibernate.hbm2ddl.auto" value="update" />
+            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
+            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/netheart"/>
+            <property name="hibernate.connection.username" value="root"/>
+            <property name="hibernate.connection.password" value="MySql"/>
+		</properties>
+	</persistence-unit>
+</persistence>
+
+Location: src/java/main/resources/spring-transaction.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/aop
+http://www.springframework.org/schema/aop/spring-aop.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/tx
+http://www.springframework.org/schema/tx/spring-tx.xsd
+http://www.springframework.org/schema/jee
+        http://www.springframework.org/schema/jee/spring-jee.xsd">
+
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations"
+			value="classpath*:src/main/resources/jdbc.properties" />
+	</bean>
+
+	<bean
+		class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceXmlLocation" value="classpath*:META-INF/persistence.xml" />
+	</bean>
+
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+	<!-- <tx:annotation-driven /> -->
+	<tx:annotation-driven transaction-manager="transactionManager"
+		proxy-target-class="true" />
+	<context:component-scan base-package="com.teddygu.treedomain.api" />
+
+	<bean id="persistenceExceptionTranslationPostProcessor"
+		class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+
+	<bean id="treeDetailDao" class="com.teddygu.treedomain.api.dao.TreeDetailDaoImpl" />
+
+</beans>
+
+
+TreeDetailDaoImpl.java
+----------------------
+@Repository
+@Transactional
+public class TreeDetailDaoImpl implements TreeDetailDao {
+
+	Logger logger = LoggerFactory.getLogger(TreeDetailDaoImpl.class);
+
+	@PersistenceContext(unitName="treeweb")
+	protected EntityManager entityManager;
+
+	@Transactional(value = "transactionManager",propagation = Propagation.REQUIRED)
+	public void list() {
+		logger.info("Entering application.");
+		logger.debug("Entering application.");
+		List<TreeDetail> treeDetails = entityManager.createQuery(
+				"from TreeDetail").getResultList();
+		System.out.println(treeDetails);
+	}
+}
+
+
+TreeDetailDaoImplTest.java
+--------------------------
+public class TreeDetailDaoImplTest {
+	public static void main(String[] args) {
+		try {
+			ApplicationContext context = new ClassPathXmlApplicationContext("spring-transaction.xml");
+			TreeDetailDaoImpl treeDetailDaoImpl = (TreeDetailDaoImpl)context.getBean("treeDetailDao");
+			treeDetailDaoImpl.list();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}
+
+TreeDetail.java
+---------------
+@Entity
+@Table(name="TREE_DETAIL", schema="netheart")
+public class TreeDetail {
+
+	@Id
+	@GeneratedValue(generator="TableIdGen")
+	@GenericGenerator(strategy="org.hibernate.id.enhanced.TableGenerator", name="TableIdGen", parameters={
+			@Parameter(name="table_name", value="TRDEID_GENERATE"),
+			@Parameter(name = "segment_value", value = "trdeId"),
+            @Parameter(name = "optimizer", value = "pooled"),
+            @Parameter(name = "initial_value", value = "1000"),
+            @Parameter(name = "increment_size", value = "10")
+	})
+	private Long trdeId;
+	@Column(nullable=false, unique=true, name="TREE_NAME")
+	private String name;
+	@Column(nullable=false, unique=true, name="TREE_LIFE_DURATION")
+	private String lifeDuration;
+	@Column(nullable=false, unique=false, name="TYPE")
+	private String type;
+	@Column(nullable=false, unique=false, name="HEIGHT")
+	private String height;
+	@Column(nullable=true, unique=false, name="SHORT_DESC")
+	private String shortDescription;
+	//setters and getters.
+}
+
+spring-transaction.xml (for without persistance.xml)
+----------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/aop
+http://www.springframework.org/schema/aop/spring-aop.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/tx
+http://www.springframework.org/schema/tx/spring-tx.xsd
+http://www.springframework.org/schema/jee
+        http://www.springframework.org/schema/jee/spring-jee.xsd">
+
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations"
+			value="classpath*:src/main/resources/jdbc.properties" />
+	</bean>
+	<bean
+		class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<!-- <property name="persistenceXmlLocation" value="classpath*:META-INF/persistence.xml" /> -->
+		<property name="persistenceUnitName" value="treeweb" />
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan" value="com.teddygu.treedomain.api.domain" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="showSql" value="true" />
+				<property name="generateDdl" value="true" />
+				<property name="databasePlatform" value="org.hibernate.dialect.MySQL5Dialect" />
+			</bean>
+		</property>
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/netheart" />
+		<property name="username" value="root" />
+		<property name="password" value="MySql" />
+	</bean>
+
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+
+	<!-- <tx:annotation-driven /> -->
+	<tx:annotation-driven transaction-manager="transactionManager"
+		proxy-target-class="true" />
+	<context:component-scan base-package="com.teddygu.treedomain.api" />
+
+	<bean id="persistenceExceptionTranslationPostProcessor"
+		class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+
+	<bean id="treeDetailDao" class="com.teddygu.treedomain.api.dao.TreeDetailDaoImpl">
+	</bean>
+
+</beans>
