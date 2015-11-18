@@ -1,0 +1,76 @@
+How to install tomcat7 on windows 7
+-----------------------------------
+1st: Download and unzip the tomcat7.zip file from Tomcat website.
+2nd: Set JAVA_HOME, JRE_HOME, CLASSPATH(.), CATALINA_HOME(tomcat folder location)
+
+Then start the tomcat.
+
+How to set user credentials and roles on tomcat-users.xml
+---------------------------------------------------------
+Add below details in tomcat-users.xml file
+
+  <role rolename="tomcat"/>
+  <role rolename="role1"/>
+  <role rolename="manager-gui"/>
+  <role rolename="manager-status"/>
+  <role rolename="manager-script"/>
+  <role rolename="manager-jmx"/>
+  <user username="tomcat" password="tomcat" roles="tomcat"/>
+  <user username="both" password="tomcat" roles="tomcat,role1"/>
+  <user username="role1" password="tomcat" roles="role1"/>
+  <user username="tomcat" password="tomcat" roles="role1,tomcat,manager-gui,manager-script,manager-status,manager-jmx"/>
+  
+
+How to start tomcat:
+--------------------
+cmd:
+cd %CATALINA_HOME%
+startup
+shutdown
+
+Run tomcat on debug mode:
+-------------------------
+cmd:
+cd %CATALINA_HOME%
+catalina.bat jpda start
+
+Set PermSize
+------------
+Open catalina.bat file then add below line.
+
+set "JAVA_OPTS=-Dfile.encoding=UTF-8 -Xms128m -Xmx1024m -XX:PermSize=64m -XX:MaxPermSize=256m"
+
+How to configure Maven Tomcat plugin to run installed tomcat on windows7(Eclipse+Maven+TomcatPlugin+Tomcat)
+-----------------------------------------------------------------------------------------------------------
+1st: Add Maven plugin as follows.
+<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<url>http://localhost:8082/manager/text</url>
+					<server>Tomcat7Server</server>
+					<username>tomcat</username>
+					<password>tomcat</password>
+					<update>true</update>
+					<path>/treeweb</path>
+				</configuration>
+			</plugin>
+
+2nd: Add below details on setting.xml of Maven installed location.
+
+<server>
+        <id>Tomcat7Server</id>
+        <username>tomcat</username>
+        <password>tomcat</password>
+    </server>
+	
+3rd: Then start the tomcat from outside.
+4th: Run below command to deploy maven project on tomcat.
+mvn tomcat7:deploy
+mvn tomcat7:redeploy
+mvn tomcat7:undeploy
+
+
+
+mvn tomcat:run -Dmaven.tomcat.port=8081
