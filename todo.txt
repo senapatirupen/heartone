@@ -1172,3 +1172,1305 @@ public class InvalidFormatException extends NgeServiceException {
 <scope>compile</scope> 
 </dependency> 
  
+ 
+------------------------------------------
+
+mvn jetty:run -Djetty.port=8081 
+mvn tomcat:run -Dmaven.tomcat.port=8081 
+ 
+ 
+<dependency> 
+<groupId>com.oracle</groupId> 
+<artifactId>ojdbc14</artifactId> 
+<version>10.2.0.2</version> 
+</dependency> 
+ 
+location: C:\tomcat\conf\context.xml: 
+or webapp/META-INF/context.xml 
+context.xml 
+----------- 
+<?xml version="1.0" encoding="UTF-8"?> 
+<!-- <Context path="/tutorial-hibernate-jpa" docBase="tutorialDS" reloadable="true" debug="1">  --> 
+<Context path="/tutorial-hibernate-jpa" reloadable="true" cachingAllowed="false" antiResourceLocking="true">  
+    <Resource name = "jdbc/tutorialDS" 
+        auth = "Container" 
+        type = "javax.sql.DataSource" 
+        username = "system" 
+        password = "system" 
+        driverClassName = "oracle.jdbc.driver.OracleDriver" 
+        url = "jdbc:oracle:thin:@localhost:1521:xe" 
+        maxActive = "10" 
+        maxIdle = "4" 
+        maxWait = "20000" 
+        removeAbandoned = "true" 
+        removeAbandonedTimeout="600" 
+        logAbandoned="true"/>    
+</Context> 
+ 
+ 
+ 
+Resources/META-INF/persistence.xml 
+--------------------------------------------------- 
+<?xml version="1.0" encoding="UTF-8"?> 
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd" 
+version="1.0"> 
+<persistence-unit name="tutorialPU" transaction-type="RESOURCE_LOCAL"> 
+<provider>org.hibernate.ejb.HibernatePersistence</provider> 
+<!-- the JNDI data source --> 
+<non-jta-data-source>java:comp/env/jdbc/tutorialDS</non-jta-data-source> 
+<properties> 
+<property name="hibernate.show_sql" value="true" /> 
+<property name="hibernate.format_sql" value="true" /> 
+<property name="hibernate.dialect" value="org.hibernate.dialect.OracleDialect" /> 
+<property name="hibernate.hbm2ddl.auto" value="create" /> 
+</properties> 
+</persistence-unit> 
+</persistence> 
+ 
+ 
+Dependencies 
+------------------- 
+<dependency> 
+<groupId>org.springframework</groupId> 
+<artifactId>spring-orm</artifactId> 
+<version>3.0.6.RELEASE</version> 
+</dependency> 
+<dependency> 
+<groupId>org.hibernate</groupId> 
+<artifactId>hibernate-entitymanager</artifactId> 
+<version>3.6.9.Final</version> 
+</dependency> 
+<dependency> 
+<groupId>org.hibernate.javax.persistence</groupId> 
+<artifactId>hibernate-jpa-2.0-api</artifactId> 
+<version>1.0.0.Final</version> 
+</dependency> 
+ 
+Mvc-dispatcher-servlet.xml 
+------------------------------------- 
+<?xml version="1.0" encoding="UTF-8"?> 
+<beans xmlns="http://www.springframework.org/schema/beans" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:context="http://www.springframework.org/schema/context" 
+    xmlns:jee="http://www.springframework.org/schema/jee" 
+    xmlns:tx="http://www.springframework.org/schema/tx" 
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd 
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
+    http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd 
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd 
+    "> 
+    <context:component-scan base-package="tutorial"/> 
+    <context:annotation-config/> 
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"> 
+        <property name="prefix"><value>/WEB-INF/pages/</value></property> 
+        <property name="suffix"><value>.jsp</value></property> 
+    </bean> 
+    <jee:jndi-lookup id="dataSource" jndi-name="jdbc/tutorialDS" expected-type="javax.sql.DataSource" resource-ref="true"/> 
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"> 
+        <property name="dataSource" ref="dataSource"/> 
+    </bean> 
+    <tx:annotation-driven/> 
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"> 
+        <property name="entityManagerFactory" ref="entityManagerFactory" /> 
+    </bean> 
+</beans> 
+ 
+ 
+Test.java 
+------------ 
+package tutorial; 
+import org.hibernate.LazyInitializationException; 
+import org.junit.Test; 
+import javax.persistence.EntityManager; 
+import javax.persistence.Persistence; 
+import java.util.Date; 
+import static org.junit.Assert.assertEquals; 
+public class UserIT extends AbstractIT { 
+@Test 
+public void testNewUser() { 
+ 
+EntityManager entityManager = Persistence.createEntityManagerFactory("tutorialPU").createEntityManager(); 
+entityManager.getTransaction().begin(); 
+User user = new User(); 
+user.setName(Long.toString(new Date().getTime())); 
+entityManager.persist(user); 
+entityManager.getTransaction().commit(); 
+// see that the ID of the user was set by Hibernate 
+System.out.println("user=" + user + ", user.id=" + user.getId()); 
+User foundUser = entityManager.find(User.class, user.getId()); 
+// note that foundUser is the same instance as user and is a concrete 
+// class (not a JDX proxy) 
+System.out.println("foundUser=" + foundUser); 
+assertEquals(user.getName(), foundUser.getName()); 
+entityManager.close(); 
+} 
+} 
+ 
+User.java 
+------------- 
+package tutorial; 
+import javax.persistence.*; 
+import java.util.HashSet; 
+import java.util.Set; 
+@Entity 
+@Table(name = "usr") // @Table is optional, but "user" is a keyword in many SQL variants  
+@NamedQuery(name = "User.findByName", query = "select u from User u where u.name = :name") 
+public class User { 
+    @Id // @Id indicates that this it a unique primary key 
+    @GeneratedValue // @GeneratedValue indicates that value is automatically generated by the server 
+    private Long id; 
+ 
+    @Column(length = 32, unique = true) 
+    // the optional @Column allows us makes sure that the name is limited to a suitable size and is unique 
+    private String name; 
+  // note that no setter for ID is provided, Hibernate will generate the ID for us 
+ 
+    public long getId() { 
+        return id; 
+    } 
+    public void setName(String name) { 
+        this.name = name; 
+    } 
+    public String getName() { 
+        return name; 
+    } 
+@ManyToMany 
+    private final Set<Role> roles = new HashSet<Role>(); 
+    public boolean addRole(Role role) { 
+        return roles.add(role); 
+    } 
+    public Set<Role> getRoles() { 
+        return roles; 
+    } 
+} 
+ 
+ 
+ 
+Some more configurations 
+----------------------------------- 
+<persistence> 
+   <persistence-unit name="manager1" transaction-type="RESOURCE_LOCAL"> 
+      <class>org.hibernate.ejb.test.Cat</class> 
+      <class>org.hibernate.ejb.test.Distributor</class> 
+      <class>org.hibernate.ejb.test.Item</class> 
+      <properties> 
+         <property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbcDriver"/> 
+         <property name="javax.persistence.jdbc.user" value="sa"/> 
+         <property name="javax.persistence.jdbc.password" value=""/> 
+         <property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:."/> 
+         <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/ 
+         <property name="hibernate.max_fetch_depth" value="3"/> 
+        
+         <!-- cache configuration --> 
+         <property name="hibernate.ejb.classcache.org.hibernate.ejb.test.Item" value="read-write"/> 
+         <property name="hibernate.ejb.collectioncache.org.hibernate.ejb.test.Item.distributors" value="read-write, RegionName"/> 
+ 
+ 
+         <!-- alternatively to <class> and <property> declarations, you can use a regular hibernate.cfg.xml file --> 
+         <!-- property name="hibernate.ejb.cfgfile" value="/org/hibernate/ejb/test/hibernate.cfg.xml"/ --> 
+      </properties> 
+   </persistence-unit> 
+</persistence> 
+ 
+ 
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" 
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd" 
+             version="2.0"> 
+   <persistence-unit name="manager1" transaction-type="JTA"> 
+      <provider>org.hibernate.ejb.HibernatePersistence</provider> 
+      <jta-data-source>java:/DefaultDS</jta-data-source> 
+ <class>org.acme.Employee</class> 
+ <!-- By default, entities are elected for second-level cache if annotated with @Cacheable --> 
+ <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode> 
+      <properties> 
+         <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/> 
+         <property name="hibernate.hbm2ddl.auto" value="create-drop"/> 
+      </properties> 
+   </persistence-unit> 
+</persistence> 
+ 
+ 
+http://docs.jboss.org/hibernate/stable/entitymanager/reference/en/html/objectstate.html 
+ 
+ 
+Pagination 
+---------- 
+If you need to specify bounds upon your result set (the maximum number of rows you want to retrieve and/or the first row you want to retrieve), use the following methods: 
+ 
+ 
+Query query = session.createQuery("Select * from employee"); 
+query.setFirstResult(20); 
+query.setMaxResult(10); 
+List cats = query.getResultList(); 
+ 
+ 
+ 
+ 
+Externalizing named queries 
+--------------------------- 
+You may also define named queries through annotations: 
+ 
+ 
+@javax.persistence.NamedQuery(name="listOfEmployees", query="select * from employee where Empolyee.jobId=?1 and Empolyee.location=?2"); 
+ 
+ 
+Parameters are bound programmatically to the named query, before it is executed: 
+ 
+ 
+Query query = session.createNamedQuery("listOfEmployees"); 
+query.setString(1, "123"); 
+query.setString(2,"mumbai"); 
+List cats = qurey.getResultList(); 
+ 
+ 
+<dependency> 
+   <groupId>org.springframework</groupId> 
+   <artifactId>spring-tx</artifactId> 
+   <version>3.0.5.RELEASE</version> 
+  </dependency> 
+  <dependency> 
+   <groupId>org.springframework</groupId> 
+   <artifactId>spring-orm</artifactId> 
+   <version>3.0.5.RELEASE</version> 
+  </dependency> 
+    <dependency> 
+      <groupId>org.hibernate</groupId> 
+      <artifactId>hibernate-entitymanager</artifactId> 
+      <version>${hibernate-core-version}</version> 
+    </dependency> 
+<dependency> 
+      <groupId>org.hibernate</groupId> 
+      <artifactId>hibernate-validator</artifactId> 
+      <version>${hibernate-validator-version}</version> 
+    </dependency> 
+<dependency> 
+      <groupId>org.hibernate</groupId> 
+      <artifactId>hibernate-search</artifactId> 
+      <version>${hibernate-search-version}</version> 
+    </dependency> 
+<dependency> 
+   <groupId>org.eclipse.persistence</groupId> 
+   <artifactId>javax.persistence</artifactId> 
+   <version>2.1.0</version> 
+  </dependency> 
+  <dependency> 
+   <groupId>javax.transaction</groupId> 
+   <artifactId>jta</artifactId> 
+   <version>1.1</version> 
+  </dependency> 
+ 
+ 
+ 
+ 
+<?xml version="1.0" encoding="UTF-8"?> 
+<properties> 
+   <property name="hibernate.connection.url" value="jdbc:hsqldb:hsql:mem:unit-testing-jpa" /> 
+   <property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver" /> 
+   <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" /> 
+   <property name="hibernate.hbm2ddl.auto" value="create" /> 
+   <property name="hibernate.hbm2ddl.export" value="true" /> 
+   <property name="hibernate.hbm2ddl.outputfilename" value="c:/aa.sql" /> 
+   <property name="hibernate.connection.username" value="sa" /> 
+   <property name="hibernate.connection.password" value="" /> 
+   <property name="hibernate.query.substitutions" value="hqlLiteral=SQL_LITERAL,hqlFunction=SQLFUNC" /> 
+</properties> 
+ 
+ 
+ 
+ 
+http://stackoverflow.com/questions/15064260/tomcat-jndi-configuration-best-practice 
+ 
+http://stackoverflow.com/questions/3403773/using-multiple-property-files-via-propertyplaceholderconfigurer-in-multiple-pr 
+ 
+http://blog.jadira.co.uk/blog/2014/4/19/spring-hibernate-and-jta-a-better-integration.html 
+ 
+https://github.com/miguelangelprogramacion/spring4_jpa_hibernate 
+ 
+http://www.studytrails.com/frameworks/spring/spring-hibernate-jpa.jsp 
+ 
+http://hibernate.org/orm/documentation/4.3/ 
+ 
+http://www.slideshare.net/brmeyer/orm-jpa-hibernate-overview 
+ 
+ 
+http://127.0.0.1:8080/apex/f?p=4550:11:4292876309624507::NO::: 
+ 
+http://docs.oracle.com/cd/B25329_01/doc/appdev.102/b25108/xedev_sqlplus.htm 
+ 
+http://mycuteblog.com/oracle-10g-xe-creating-scott-schema-default-tables/ 
+ 
+http://docs.oracle.com/cd/B13789_01/server.101/b10759/toc.htm 
+ 
+http://coderevisited.com/beginning-jpa-2-0/ 
+ 
+http://howtodoinjava.com/2015/04/06/spring-hibernate-jpa-configuration-example/ 
+ 
+http://stackoverflow.com/questions/12464586/sending-json-to-spring-mvc-controller 
+ 
+https://dzone.com/articles/ext-js-4-spring-mvc-crud 
+ 
+https://docs.jboss.org/hibernate/orm/3.3/reference/en-US/html/session-configuration.html 
+ 
+ 
+Angular JS with spring MVC 
+------------------------------------- 
+ 
+https://spring.io/blog/2015/08/19/migrating-a-spring-web-mvc-application-from-jsp-to-angularjs 
+ 
+"how to hold spring mvc model data with angular js" 
+ 
+https://github.com/singularity-sg/spring-petclinic 
+ 
+
+--------------------------
+
+mvn jetty:run -Djetty.port=8081 
+mvn tomcat:run -Dmaven.tomcat.port=8081 
+ 
+ 
+<dependency> 
+<groupId>com.oracle</groupId> 
+<artifactId>ojdbc14</artifactId> 
+<version>10.2.0.2</version> 
+</dependency> 
+ 
+location: C:\tomcat\conf\context.xml: 
+or webapp/META-INF/context.xml 
+context.xml 
+----------- 
+<?xml version="1.0" encoding="UTF-8"?> 
+<!-- <Context path="/tutorial-hibernate-jpa" docBase="tutorialDS" reloadable="true" debug="1">  --> 
+<Context path="/tutorial-hibernate-jpa" reloadable="true" cachingAllowed="false" antiResourceLocking="true">  
+    <Resource name = "jdbc/tutorialDS" 
+        auth = "Container" 
+        type = "javax.sql.DataSource" 
+        username = "system" 
+        password = "system" 
+        driverClassName = "oracle.jdbc.driver.OracleDriver" 
+        url = "jdbc:oracle:thin:@localhost:1521:xe" 
+        maxActive = "10" 
+        maxIdle = "4" 
+        maxWait = "20000" 
+        removeAbandoned = "true" 
+        removeAbandonedTimeout="600" 
+        logAbandoned="true"/>    
+</Context> 
+ 
+ 
+ 
+Resources/META-INF/persistence.xml 
+--------------------------------------------------- 
+<?xml version="1.0" encoding="UTF-8"?> 
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd" 
+version="1.0"> 
+<persistence-unit name="tutorialPU" transaction-type="RESOURCE_LOCAL"> 
+<provider>org.hibernate.ejb.HibernatePersistence</provider> 
+<!-- the JNDI data source --> 
+<non-jta-data-source>java:comp/env/jdbc/tutorialDS</non-jta-data-source> 
+<properties> 
+<property name="hibernate.show_sql" value="true" /> 
+<property name="hibernate.format_sql" value="true" /> 
+<property name="hibernate.dialect" value="org.hibernate.dialect.OracleDialect" /> 
+<property name="hibernate.hbm2ddl.auto" value="create" /> 
+</properties> 
+</persistence-unit> 
+</persistence> 
+ 
+ 
+Dependencies 
+------------------- 
+<dependency> 
+<groupId>org.springframework</groupId> 
+<artifactId>spring-orm</artifactId> 
+<version>3.0.6.RELEASE</version> 
+</dependency> 
+<dependency> 
+<groupId>org.hibernate</groupId> 
+<artifactId>hibernate-entitymanager</artifactId> 
+<version>3.6.9.Final</version> 
+</dependency> 
+<dependency> 
+<groupId>org.hibernate.javax.persistence</groupId> 
+<artifactId>hibernate-jpa-2.0-api</artifactId> 
+<version>1.0.0.Final</version> 
+</dependency> 
+ 
+Mvc-dispatcher-servlet.xml 
+------------------------------------- 
+<?xml version="1.0" encoding="UTF-8"?> 
+<beans xmlns="http://www.springframework.org/schema/beans" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:context="http://www.springframework.org/schema/context" 
+    xmlns:jee="http://www.springframework.org/schema/jee" 
+    xmlns:tx="http://www.springframework.org/schema/tx" 
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd 
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
+    http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd 
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd 
+    "> 
+    <context:component-scan base-package="tutorial"/> 
+    <context:annotation-config/> 
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"> 
+        <property name="prefix"><value>/WEB-INF/pages/</value></property> 
+        <property name="suffix"><value>.jsp</value></property> 
+    </bean> 
+    <jee:jndi-lookup id="dataSource" jndi-name="jdbc/tutorialDS" expected-type="javax.sql.DataSource" resource-ref="true"/> 
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"> 
+        <property name="dataSource" ref="dataSource"/> 
+    </bean> 
+    <tx:annotation-driven/> 
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"> 
+        <property name="entityManagerFactory" ref="entityManagerFactory" /> 
+    </bean> 
+</beans> 
+ 
+ 
+Test.java 
+------------ 
+package tutorial; 
+import org.hibernate.LazyInitializationException; 
+import org.junit.Test; 
+import javax.persistence.EntityManager; 
+import javax.persistence.Persistence; 
+import java.util.Date; 
+import static org.junit.Assert.assertEquals; 
+public class UserIT extends AbstractIT { 
+@Test 
+public void testNewUser() { 
+ 
+EntityManager entityManager = Persistence.createEntityManagerFactory("tutorialPU").createEntityManager(); 
+entityManager.getTransaction().begin(); 
+User user = new User(); 
+user.setName(Long.toString(new Date().getTime())); 
+entityManager.persist(user); 
+entityManager.getTransaction().commit(); 
+// see that the ID of the user was set by Hibernate 
+System.out.println("user=" + user + ", user.id=" + user.getId()); 
+User foundUser = entityManager.find(User.class, user.getId()); 
+// note that foundUser is the same instance as user and is a concrete 
+// class (not a JDX proxy) 
+System.out.println("foundUser=" + foundUser); 
+assertEquals(user.getName(), foundUser.getName()); 
+entityManager.close(); 
+} 
+} 
+ 
+User.java 
+------------- 
+package tutorial; 
+import javax.persistence.*; 
+import java.util.HashSet; 
+import java.util.Set; 
+@Entity 
+@Table(name = "usr") // @Table is optional, but "user" is a keyword in many SQL variants  
+@NamedQuery(name = "User.findByName", query = "select u from User u where u.name = :name") 
+public class User { 
+    @Id // @Id indicates that this it a unique primary key 
+    @GeneratedValue // @GeneratedValue indicates that value is automatically generated by the server 
+    private Long id; 
+ 
+    @Column(length = 32, unique = true) 
+    // the optional @Column allows us makes sure that the name is limited to a suitable size and is unique 
+    private String name; 
+  // note that no setter for ID is provided, Hibernate will generate the ID for us 
+ 
+    public long getId() { 
+        return id; 
+    } 
+    public void setName(String name) { 
+        this.name = name; 
+    } 
+    public String getName() { 
+        return name; 
+    } 
+@ManyToMany 
+    private final Set<Role> roles = new HashSet<Role>(); 
+    public boolean addRole(Role role) { 
+        return roles.add(role); 
+    } 
+    public Set<Role> getRoles() { 
+        return roles; 
+    } 
+} 
+ 
+ 
+ 
+Some more configurations 
+----------------------------------- 
+<persistence> 
+   <persistence-unit name="manager1" transaction-type="RESOURCE_LOCAL"> 
+      <class>org.hibernate.ejb.test.Cat</class> 
+      <class>org.hibernate.ejb.test.Distributor</class> 
+      <class>org.hibernate.ejb.test.Item</class> 
+      <properties> 
+         <property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbcDriver"/> 
+         <property name="javax.persistence.jdbc.user" value="sa"/> 
+         <property name="javax.persistence.jdbc.password" value=""/> 
+         <property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:."/> 
+         <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/ 
+         <property name="hibernate.max_fetch_depth" value="3"/> 
+        
+         <!-- cache configuration --> 
+         <property name="hibernate.ejb.classcache.org.hibernate.ejb.test.Item" value="read-write"/> 
+         <property name="hibernate.ejb.collectioncache.org.hibernate.ejb.test.Item.distributors" value="read-write, RegionName"/> 
+ 
+ 
+         <!-- alternatively to <class> and <property> declarations, you can use a regular hibernate.cfg.xml file --> 
+         <!-- property name="hibernate.ejb.cfgfile" value="/org/hibernate/ejb/test/hibernate.cfg.xml"/ --> 
+      </properties> 
+   </persistence-unit> 
+</persistence> 
+ 
+ 
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" 
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd" 
+             version="2.0"> 
+   <persistence-unit name="manager1" transaction-type="JTA"> 
+      <provider>org.hibernate.ejb.HibernatePersistence</provider> 
+      <jta-data-source>java:/DefaultDS</jta-data-source> 
+ <class>org.acme.Employee</class> 
+ <!-- By default, entities are elected for second-level cache if annotated with @Cacheable --> 
+ <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode> 
+      <properties> 
+         <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/> 
+         <property name="hibernate.hbm2ddl.auto" value="create-drop"/> 
+      </properties> 
+   </persistence-unit> 
+</persistence> 
+ 
+ 
+http://docs.jboss.org/hibernate/stable/entitymanager/reference/en/html/objectstate.html 
+ 
+ 
+Pagination 
+---------- 
+If you need to specify bounds upon your result set (the maximum number of rows you want to retrieve and/or the first row you want to retrieve), use the following methods: 
+ 
+ 
+Query query = session.createQuery("Select * from employee"); 
+query.setFirstResult(20); 
+query.setMaxResult(10); 
+List cats = query.getResultList(); 
+ 
+ 
+ 
+ 
+Externalizing named queries 
+--------------------------- 
+You may also define named queries through annotations: 
+ 
+ 
+@javax.persistence.NamedQuery(name="listOfEmployees", query="select * from employee where Empolyee.jobId=?1 and Empolyee.location=?2"); 
+ 
+ 
+Parameters are bound programmatically to the named query, before it is executed: 
+ 
+ 
+Query query = session.createNamedQuery("listOfEmployees"); 
+query.setString(1, "123"); 
+query.setString(2,"mumbai"); 
+List cats = qurey.getResultList(); 
+ 
+ 
+<dependency> 
+   <groupId>org.springframework</groupId> 
+   <artifactId>spring-tx</artifactId> 
+   <version>3.0.5.RELEASE</version> 
+  </dependency> 
+  <dependency> 
+   <groupId>org.springframework</groupId> 
+   <artifactId>spring-orm</artifactId> 
+   <version>3.0.5.RELEASE</version> 
+  </dependency> 
+    <dependency> 
+      <groupId>org.hibernate</groupId> 
+      <artifactId>hibernate-entitymanager</artifactId> 
+      <version>${hibernate-core-version}</version> 
+    </dependency> 
+<dependency> 
+      <groupId>org.hibernate</groupId> 
+      <artifactId>hibernate-validator</artifactId> 
+      <version>${hibernate-validator-version}</version> 
+    </dependency> 
+<dependency> 
+      <groupId>org.hibernate</groupId> 
+      <artifactId>hibernate-search</artifactId> 
+      <version>${hibernate-search-version}</version> 
+    </dependency> 
+<dependency> 
+   <groupId>org.eclipse.persistence</groupId> 
+   <artifactId>javax.persistence</artifactId> 
+   <version>2.1.0</version> 
+  </dependency> 
+  <dependency> 
+   <groupId>javax.transaction</groupId> 
+   <artifactId>jta</artifactId> 
+   <version>1.1</version> 
+  </dependency> 
+ 
+ 
+ 
+ 
+<?xml version="1.0" encoding="UTF-8"?> 
+<properties> 
+   <property name="hibernate.connection.url" value="jdbc:hsqldb:hsql:mem:unit-testing-jpa" /> 
+   <property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver" /> 
+   <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" /> 
+   <property name="hibernate.hbm2ddl.auto" value="create" /> 
+   <property name="hibernate.hbm2ddl.export" value="true" /> 
+   <property name="hibernate.hbm2ddl.outputfilename" value="c:/aa.sql" /> 
+   <property name="hibernate.connection.username" value="sa" /> 
+   <property name="hibernate.connection.password" value="" /> 
+   <property name="hibernate.query.substitutions" value="hqlLiteral=SQL_LITERAL,hqlFunction=SQLFUNC" /> 
+</properties> 
+ 
+ 
+ 
+ 
+http://stackoverflow.com/questions/15064260/tomcat-jndi-configuration-best-practice 
+ 
+http://stackoverflow.com/questions/3403773/using-multiple-property-files-via-propertyplaceholderconfigurer-in-multiple-pr 
+ 
+http://blog.jadira.co.uk/blog/2014/4/19/spring-hibernate-and-jta-a-better-integration.html 
+ 
+https://github.com/miguelangelprogramacion/spring4_jpa_hibernate 
+ 
+http://www.studytrails.com/frameworks/spring/spring-hibernate-jpa.jsp 
+ 
+http://hibernate.org/orm/documentation/4.3/ 
+ 
+http://www.slideshare.net/brmeyer/orm-jpa-hibernate-overview 
+ 
+ 
+http://127.0.0.1:8080/apex/f?p=4550:11:4292876309624507::NO::: 
+ 
+http://docs.oracle.com/cd/B25329_01/doc/appdev.102/b25108/xedev_sqlplus.htm 
+ 
+http://mycuteblog.com/oracle-10g-xe-creating-scott-schema-default-tables/ 
+ 
+http://docs.oracle.com/cd/B13789_01/server.101/b10759/toc.htm 
+ 
+http://coderevisited.com/beginning-jpa-2-0/ 
+ 
+http://howtodoinjava.com/2015/04/06/spring-hibernate-jpa-configuration-example/ 
+ 
+http://stackoverflow.com/questions/12464586/sending-json-to-spring-mvc-controller 
+ 
+https://dzone.com/articles/ext-js-4-spring-mvc-crud 
+ 
+https://docs.jboss.org/hibernate/orm/3.3/reference/en-US/html/session-configuration.html 
+ 
+ 
+Angular JS with spring MVC 
+------------------------------------- 
+ 
+https://spring.io/blog/2015/08/19/migrating-a-spring-web-mvc-application-from-jsp-to-angularjs 
+ 
+"how to hold spring mvc model data with angular js" 
+ 
+https://github.com/singularity-sg/spring-petclinic 
+ 
+----------------------------
+
+Sql---Sql 
+adaptors, config, util, dto, entity, exception, handler, helpers, provider, components, dao, delegator, metadata, service, vo, webservice, constant, 
+model, web,
+
+
+
+
+-----------------------------------
+
+http://stackoverflow.com/questions/15064260/tomcat-jndi-configuration-best-practice 
+ 
+http://stackoverflow.com/questions/3403773/using-multiple-property-files-via-propertyplaceholderconfigurer-in-multiple-pr 
+ 
+http://blog.jadira.co.uk/blog/2014/4/19/spring-hibernate-and-jta-a-better-integration.html 
+ 
+https://github.com/miguelangelprogramacion/spring4_jpa_hibernate 
+ 
+http://www.studytrails.com/frameworks/spring/spring-hibernate-jpa.jsp 
+ 
+ 
+ 
+Configuring multiple properties file in spring context.xml 
+---------------------------------------------------------- 
+<context:property-placeholder 
+location="classpath:dao.properties, 
+          classpath:services.properties, 
+          classpath:user.properties" 
+ignore-unresolvable="true"/> 
+ 
+ 
+or 
+ 
+ 
+<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"> 
+        <property name="locations"> 
+            <list> 
+                <value>classpath:dao.properties</value> 
+                <value>classpath:services.properties</value> 
+                <value>classpath:user.properties</value> 
+            </list> 
+        </property>  
+        <property name="ignoreUnresolvablePlaceholders" value="true"/> 
+</bean> 
+ 
+ 
+------------------- 
+public final class LevelNUtility { 
+    private static final LevelNUtility INSTANCE = new LevelNUtility(); 
+    private static final String APPLICATION_TYPE_JSON = "application/json"; 
+private static final List<String> CHNG_STATUS_LIST = new ArrayList<String>(); 
+static { 
+CHNG_STATUS_LIST.add("1"); 
+CHNG_STATUS_LIST.add("2"); 
+CHNG_STATUS_LIST.add("6"); 
+} 
+   private LevelNUtility() { 
+    } 
+    public static LevelNUtility getINSTANCE() { 
+        return INSTANCE; 
+    } 
+private boolean checkForAutoAssign(final LvlNEnttlPayload lvnNEnttlPayload) { 
+boolean autoAssign = false; 
+final Map<String, Map<String, String>> entitiesMap = lvnNEnttlPayload.getExtnlAccLnkDtoMap(); 
+for (final Map.Entry<String, Map<String, String>> entry : entitiesMap.entrySet()) { 
+final Map<String, String> externalEntityMap = entry.getValue(); 
+final Entities entities = LevelNUtility.loadEntities(); 
+final List<Entity> entityList = entities.getEntity(); 
+for (final Entity entity : entityList) { 
+if (entitiesMap != null) { 
+if (lvnNEnttlPayload.isDreamsPayload()) { 
+for (final Entry<String, String> entty : externalEntityMap 
+.entrySet()) { 
+if (entity.getId().equalsIgnoreCase( 
+entty.getKey().toString())) { 
+autoAssign = true; 
+break; 
+} 
+} 
+} else { 
+if (externalEntityMap.containsValue(entity.getId())) { 
+autoAssign = true; 
+break; 
+} 
+} 
+} 
+} 
+} 
+return autoAssign; 
+} 
+} 
+ 
+ 
+ 
+ 
+Sql---Sql 
+adaptors, config, util, dto, entity, exception, handler, helpers, provider, components, dao, delegator, metadata, service, vo, webservice, constant, 
+model, web,  
+ 
+ 
+select * from emp; 
+select * from dept; 
+update emp set ename = 'SMITH' where ename='SMITs'; 
+--SELECT column_name(s) FROM table_name WHERE ROWNUM <= number; 
+select ename,sal from emp where rownum <= 4; 
+select ename from emp where ename like '%LL%'; 
+select ename from emp where ename like '_LL%'; 
+select ename from emp where ename not like '%LL%'; 
+select ename as "Employee Name" from emp where ename like '%LL%'; 
+select ename as "Employee Name" from emp; 
+select concat(ename,mgr) as "Employee with job" from emp; 
+select e.ename, a.job from emp e, emp a; 
+select e.ename, a.job from emp e, emp a where e.ename = a.ename; 
+select e.ename, d.loc from emp e inner join dept d on e.deptno = d.deptno; 
+--inner join is same as join 
+select e.ename, d.loc from emp e join dept d on e.deptno = d.deptno; 
+-- LEFT JOIN, RIGHT JOIN, FULL OUTER JOIN 
+select e.ename, d.loc from emp e join dept d on e.deptno = d.deptno order by e.ename; 
+-- The SQL UNION operator combines the result of two or more SELECT statements. 
+-- expression must have same datatype as corresponding expression 
+select deptno from emp union select deptno from dept; 
+select deptno from emp union all select deptno from dept; 
+insert into some_employee select * FROM emp WHERE ROWNUM < 2; 
+insert into some_employee(ename,mgr)  select ename,mgr FROM emp; 
+-- not null, unique, primary key, foreign key, check, default: list of constraints. 
+ALTER TABLE Persons ADD CONSTRAINT uc_PersonID UNIQUE (P_Id,LastName); 
+ALTER TABLE Persons DROP CONSTRAINT uc_PersonID; 
+CREATE TABLE Orders(O_Id int NOT NULL, 
+OrderNo int NOT NULL, P_Id int, PRIMARY KEY (O_Id), 
+CONSTRAINT fk_PerOrders FOREIGN KEY (P_Id) REFERENCES Persons(P_Id)); 
+CREATE INDEX PIndex ON Persons (LastName, FirstName);
+
+
+---------------------------
+
+Download and install GitHubSetup 
+Download and install TortoiseGit-1.8.14.0-32bit 
+Download and install TortoiseSVN 1.7.11(optional) 
+Download and install Egit plugin in eclipse (optional) 
+create repository on github.com 
+>>inside the local project location. 
+git init 
+git status 
+git add . or git add * 
+git commit -m 'initial configuration' 
+git remote add origin https://github.com/senapatirupen/heartone.git 
+git push -u origin master 
+>> open the local repository location in installed GitHubSetup. 
+>>In case of adding folder to the git repository 
+git add app/ config/ to add folder like app and config 
+ 
+------------------------------ 
+ 
+package guest.common.exception; 
+ 
+ 
+public class GuestException extends Exception{ 
+/** 
+*  
+*/ 
+private static final long serialVersionUID = -847504205651402060L; 
+private Object entity; 
+private int status; 
+private String messageCode; 
+public Object getEntity() { 
+return entity; 
+} 
+ 
+ 
+public void setEntity(Object entity) { 
+this.entity = entity; 
+} 
+ 
+ 
+public int getStatus() { 
+return status; 
+} 
+ 
+ 
+public void setStatus(int status) { 
+this.status = status; 
+} 
+ 
+ 
+public String getMessageCode() { 
+return messageCode; 
+} 
+ 
+ 
+public void setMessageCode(String messageCode) { 
+this.messageCode = messageCode; 
+} 
+ 
+ 
+public GuestException() { 
+super(); 
+} 
+public GuestException(Object entity){ 
+this(); 
+this.entity = entity; 
+} 
+public GuestException(final String message){ 
+super(message); 
+this.entity = message; 
+} 
+public GuestException(final String message, Throwable cause){ 
+super(message, cause); 
+} 
+public GuestException(Throwable cause){ 
+super(cause); 
+} 
+public GuestException(Throwable cause, Object entity){ 
+super(cause); 
+this.entity = entity; 
+} 
+public GuestException(final String messageCode, final int statusCode, final String message){ 
+super(message); 
+this.messageCode=messageCode; 
+this.status=statusCode; 
+} 
+} 
+ 
+ 
+------------------ 
+ 
+package guest.common.exception; 
+ 
+ 
+public class GuestException extends Exception{ 
+/** 
+*  
+*/ 
+private static final long serialVersionUID = -847504205651402060L; 
+private Object entity; 
+private int status; 
+private String messageCode; 
+public Object getEntity() { 
+return entity; 
+} 
+ 
+ 
+public void setEntity(Object entity) { 
+this.entity = entity; 
+} 
+ 
+ 
+public int getStatus() { 
+return status; 
+} 
+ 
+ 
+public void setStatus(int status) { 
+this.status = status; 
+} 
+ 
+ 
+public String getMessageCode() { 
+return messageCode; 
+} 
+ 
+ 
+public void setMessageCode(String messageCode) { 
+this.messageCode = messageCode; 
+} 
+ 
+ 
+public GuestException() { 
+super(); 
+} 
+public GuestException(Object entity){ 
+this(); 
+this.entity = entity; 
+} 
+public GuestException(final String message){ 
+super(message); 
+this.entity = message; 
+} 
+public GuestException(final String message, Throwable cause){ 
+super(message, cause); 
+} 
+public GuestException(Throwable cause){ 
+super(cause); 
+} 
+public GuestException(Throwable cause, Object entity){ 
+super(cause); 
+this.entity = entity; 
+} 
+public GuestException(final String messageCode, final int statusCode, final String message){ 
+super(message); 
+this.messageCode=messageCode; 
+this.status=statusCode; 
+} 
+} 
+ 
+ 
+-------------------- 
+ 
+package guest; 
+ 
+ 
+import java.sql.Date; 
+import java.util.ArrayList; 
+import java.util.Collection; 
+ 
+ 
+public class GuestDaoImpl { 
+ 
+ 
+public Collection<Guest> list(){ 
+Collection<Guest> guests = new ArrayList<Guest>(); 
+Guest guest = new Guest(); 
+guest.setName("emp"); 
+guest.setSigningDate(new Date(System.currentTimeMillis())); 
+guests.add(guest); 
+return guests; 
+} 
+} 
+ 
+ 
+ 
+--------------------- 
+ 
+package guest; 
+ 
+ 
+import guest.common.exception.ExceptionUtil; 
+import guest.common.exception.GuestException; 
+ 
+ 
+import java.util.Collection; 
+import java.util.List; 
+ 
+ 
+public class GuestImplTest { 
+public static void main(String[] args) throws GuestException { 
+GuestDaoImpl impl = new GuestDaoImpl(); 
+List<Guest> guests = (List<Guest>) impl.list(); 
+System.out.println(guests.get(0).getName()); 
+try { 
+if (!guests.get(0).getName().equalsIgnoreCase("emppp")) { 
+throw new GuestException("2001", 500, "* name does not exist * "+ExceptionUtil.getInstance() 
+.getClassAndMethodDetails(GuestImplTest.class, "main")); 
+} 
+} catch (Exception e) { 
+// TODO Auto-generated catch block 
+e.printStackTrace(); 
+} 
+if(guests.get(0).getName().equalsIgnoreCase("emp")){ 
+System.out.println("name does exist"); 
+} 
+} 
+} 
+ 
+ 
+-------------------- 
+package guest; 
+  
+import java.io.Serializable; 
+import java.sql.Date; 
+import javax.persistence.Entity; 
+import javax.persistence.GeneratedValue; 
+import javax.persistence.Id; 
+  
+@Entity 
+public class Guest implements Serializable { 
+    private static final long serialVersionUID = 1L; 
+  
+    // Persistent Fields: 
+    @Id @GeneratedValue 
+    Long id; 
+    private String name; 
+    private Date signingDate; 
+  
+    // Constructors: 
+    public Guest() { 
+    } 
+  
+    public Guest(String name) { 
+        this.name = name; 
+        this.signingDate = new Date(System.currentTimeMillis()); 
+    } 
+     
+    public String getName() { 
+return name; 
+} 
+ 
+ 
+public void setName(String name) { 
+this.name = name; 
+} 
+ 
+ 
+public Date getSigningDate() { 
+return signingDate; 
+} 
+ 
+ 
+public void setSigningDate(Date signingDate) { 
+this.signingDate = signingDate; 
+} 
+ 
+ 
+// String Representation: 
+    @Override 
+    public String toString() { 
+        return name + " (signed on " + signingDate + ")"; 
+    } 
+     
+     
+} 
+ 
+--------------------------- 
+ 
+package guest.common.exception; 
+ 
+ 
+public class GuestEventException extends RuntimeException { 
+ 
+ 
+public GuestEventException() { 
+super(); 
+} 
+ 
+ 
+public GuestEventException(final String message) { 
+super(message); 
+} 
+ 
+ 
+public GuestEventException(final Throwable exception) { 
+super(exception); 
+} 
+ 
+ 
+public GuestEventException(final String message, final Throwable exception) { 
+super(message, exception); 
+} 
+} 
+ 
+ 
+--------------------------- 
+package guest.common.exception; 
+ 
+ 
+public class SyntaxException extends Exception { 
+ 
+ 
+private String input; 
+private int index; 
+public String getInput() { 
+return input; 
+} 
+ 
+ 
+public void setInput(String input) { 
+this.input = input; 
+} 
+ 
+ 
+public int getIndex() { 
+return index; 
+} 
+ 
+ 
+public void setIndex(int index) { 
+this.index = index; 
+} 
+ 
+ 
+public SyntaxException(String input, int index, String reason) { 
+super(reason); 
+if ((input == null) || (reason == null)) { 
+throw new NullPointerException(); 
+} 
+if (index <= -1) { 
+throw new IllegalArgumentException(); 
+} 
+this.index = index; 
+this.input = input; 
+} 
+public SyntaxException(String input, String reason){ 
+this(input, -1, reason); 
+} 
+public String getMessage(){ 
+return super.getMessage(); 
+} 
+} 
+ 
+ 
+------------------------- 
+package guest.common.exception; 
+ 
+ 
+import java.io.IOException; 
+ 
+ 
+public class UnsupportedException extends IOException { 
+ 
+ 
+public UnsupportedException() { 
+super(); 
+} 
+ 
+ 
+public UnsupportedException(String message) { 
+super(message); 
+} 
+} 
+ 
+ 
+-------------------- 
+exctra 
+------ 
+<bean id="jpaTemplate" class="org.springframework.orm.jpa.JpaTemplate"> 
+<property name="entityManagerFactory" ref="entityManagerFactory" /> 
+</bean> 
+<bean id="simpleJdbcTemplate" class="org.springframework.jdbc.core.simple.SimpleJdbcTemplate"> 
+<constructor-arg type="javax.sql.DataSource" ref="dataSource" /> 
+</bean> 
+<bean id="namedParameterJdbcTemplate" 
+class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate"> 
+<constructor-arg type="javax.sql.DataSource" ref="dataSource" /> 
+</bean> 
+ 
+ 
+@Autowired 
+@PersistenceContext(name = "entityManagerFactory") 
+private EntityManager entityManager; 
+ 
+ 
+ 
+ 
+ 
+ 
+        final Query query = entityManager.createNamedQuery("ExtnlTxnExprncLnk.findNgeEligibilityRecords"); 
+        query.setParameter("activeXid", activeXID); 
+query.setParameter("passiveXid", StringUtils.remove(passiveXID, "-")); 
+query.setParameter("txnExprncLnkId", experienceIDs); 
+final List<Object[]> oldNewexperienceIds = query.getResultList(); 
+ 
+ 
+@Entity 
+@Table(name = "EXTNL_TXN_EXPRNC_LNK") 
+@org.hibernate.annotations.Entity(dynamicUpdate = true) 
+@NamedQueries({ 
+@NamedQuery(name = "ExtnlTxnExprncLnk.findXidsByNativeIdsTxn", 
+query = "SELECT extTxnExpLnk FROM ExtnlTxnExprncLnk extTxnExpLnk " 
++ " join fetch extTxnExpLnk.exprncLnk2 expLnk " 
++ " join fetch extTxnExpLnk.extnlTxn extTxn" 
++ " join fetch extTxn.extnlSysEntty extTxnSysEnt" 
++ " WHERE extTxn.ntvId in (:ntvId) " 
++ " AND extTxnExpLnk.extnlAcctLnk IS NULL " 
++ " AND extTxnExpLnk.lgclDelIn = 'N' " 
++ " AND expLnk.lgclDelIn = 'N' " 
++ " AND extTxn.lgclDelIn = 'N' " 
++ " AND extTxnSysEnt.lgclDelIn = 'N' ")}) 
+public class ExtnlTxnExprncLnk extends DomainEntity implements EntityConstants { 
+ 
+ 
+/** The Constant serialVersionUID. */ 
+private static final long serialVersionUID = 1L; 
+ 
+ 
+/** The txn exprnc lnk id. */ 
+@Id 
+@Column(name = "TXN_EXPRNC_LNK_ID", unique = true, nullable = false, length = THIRTY_EIGHT) 
+@org.hibernate.annotations.GenericGenerator(name = "uuid-strategy", strategy = "uuid.hex") 
+@GeneratedValue(generator = "uuid-strategy") 
+private String txnExprncLnkId; 
+/** The create dts. */ 
+@Column(name = "CREATE_DTS", nullable = false) 
+private Timestamp createDts; 
+//setters and getters 
+} 
+ 
+ 
+ 
+ 
+@Service("pkgdclGuestPidDetailsService") 
+public class DCLGuestPidDetailsServiceImpl implements DCLGuestPidDetailsService { 
+ 
+ 
+/** The dcl guest association dao. */ 
+@Autowired 
+@Qualifier("pkgdclGuestAssociationDao") 
+private DCLGuestAssociationDao dclGuestAssociationDao; 
+http://www.codeproject.com/Articles/251166/The-Generic-DAO-pattern-in-Java-with-Spring-and 
+http://www.mkyong.com/hibernate/how-to-configure-logging-in-hibernate-logback/ 
+http://docs.spring.io/spring-framework/docs/current/spring-framework-reference/html/aop.html 
+https://dzone.com/articles/using-aspectj%E2%80%99s-afterthrowing 
+https://github.com/spring-projects/spring-boot/blob/master/spring-boot-dependencies/pom.xml 
+ 
+ 
+ 
+ 
+<logger name="org.hibernate.type" level="ALL" /> 
+<logger name="org.hibernate" level="DEBUG" /> 

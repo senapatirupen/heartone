@@ -25,7 +25,7 @@ tree_detail
 tree_images
     trid, irimid, image_one, image_two, image_three, image_four, image_five, 
 
-tree_price_detail
+price
     trid, purchase_price, sale_parice, tax, purchase_percent, sale_percent, profit,
 
 shipping_detail
