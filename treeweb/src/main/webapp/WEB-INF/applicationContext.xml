@@ -11,6 +11,9 @@
         http://www.springframework.org/schema/context/spring-context.xsd ">
 
 
-<bean id="personDao" class="com.teddygu.tree.api.dao.PersonDaoImpl">
+<bean id="signInModel" class="com.teddygu.tree.api.web.model.SignInModel">
 </bean>
+<bean id="signUpModel" class="com.teddygu.tree.api.web.model.SignUpModel">
+</bean>
+
 </beans>

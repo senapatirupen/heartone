@@ -12,7 +12,7 @@ import com.teddygu.tree.api.domain.Person;
  *
  */
 public interface PersonDao {
-	public void save(Person person);
+	public Boolean save(Person person);
 	public Person findByName(String name);
 	public Person findById(String id);
 	public Collection<Person> list();

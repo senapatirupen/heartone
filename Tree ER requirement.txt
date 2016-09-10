@@ -36,3 +36,56 @@ order_detail
   	
 stock_detail
     stid, name, is_available, quantity, expected_finish_date, expected_in_stock_date, in_stock_duration, expected_stock_available, 
+	
+	
+	
+Medicinal Plant
+Flower Plant
+Decoration Plant
+Herbs
+Shrubs
+Fruit
+Vegetables
+
+Gardern Plant, Office Plant, Home Plant, Gift Plant
+
+Flower Plants
+
+    Rose Plants, 
+
+Orders:
+    Search for order
+    View Recent Orders
+    Order History
+	Order an canceled Order
+	Manage Review and Rating
+	Manage suggestion and feedback
+	Manage Delivery Address
+
+Payment:
+    Total amount payed till now
+	Available Payemnt Methods
+	Gifts
+	Wallet
+	Saved Cards
+	
+Settings:
+    Manage Personal Address
+	Manage Account
+	Manage Password
+	Manage EmailId
+	Manage Contact
+	Manage Notifications
+	
+Personalisation
+    Your Wish List
+    Recommended for you
+	Items in your Cart
+	Product availebility alert
+	
+Review & Ratings
+    List of Reviews & Ratings
+	List of suggestion and feedback
+	
+
+Plant, Seed, Port & Planter, Pebbles, Fertilizer, Soil

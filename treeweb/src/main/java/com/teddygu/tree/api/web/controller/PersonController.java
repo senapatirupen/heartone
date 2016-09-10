@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.teddygu.tree.api.service.PersonService;
 import com.teddygu.tree.api.service.PersonServiceImpl;
 
 /**
@@ -17,14 +18,14 @@ import com.teddygu.tree.api.service.PersonServiceImpl;
  *
  */
 @Controller
-@RequestMapping(value="/person/")
+@RequestMapping(value="/person")
 public class PersonController {
 
 	Logger logger = LoggerFactory.getLogger(PersonController.class);
 
 	@Autowired
 	@Qualifier(value="personService")
-	private PersonServiceImpl personService;
+	private PersonService personService;
 
 	@RequestMapping(value="/list")
 	public String viewList(){

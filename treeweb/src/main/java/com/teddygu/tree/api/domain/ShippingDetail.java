@@ -24,7 +24,7 @@ public class ShippingDetail {
 			@Parameter(name = "initial_value", value = "1000"),
 			@Parameter(name = "increment_size", value = "10")
 		})
-	private long shdeId;
+	private Long shdeId;
 	@Column(name = "IS_DELEVERED", nullable = false, unique = false)
 	private String isDelevered;
 	@Column(name = "DELIVER_DATE", nullable = false, unique = false)
@@ -37,13 +37,13 @@ public class ShippingDetail {
 	/**
 	 * @return the shdeId
 	 */
-	public long getShdeId() {
+	public Long getShdeId() {
 		return shdeId;
 	}
 	/**
 	 * @param shdeId the shdeId to set
 	 */
-	public void setShdeId(long shdeId) {
+	public void setShdeId(Long shdeId) {
 		this.shdeId = shdeId;
 	}
 	/**

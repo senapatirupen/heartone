@@ -1,24 +1,38 @@
 package com.teddygu.tree.api.domain;
 
-public class TreeInfo implements java.io.Serializable{
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+
+@Entity
+@Table(name="TREE_INFO", schema="netheart")
+public class TreeInfo {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 959749666653088024L;
-	private Integer treeId;
+	@Id
+	@GeneratedValue(generator="TableIdGen")
+	@GenericGenerator(strategy="org.hibernate.id.enhanced.TableGenerator", name="TableIdGen", parameters={
+			@Parameter(name="table_name", value="TRINID_GENERATE"),
+			@Parameter(name = "segment_value", value = "trdeId"),
+            @Parameter(name = "optimizer", value = "pooled"),
+            @Parameter(name = "initial_value", value = "1000"),
+            @Parameter(name = "increment_size", value = "10")
+	})
+
+	private Integer trinId;
 	private String name;
-	/**
-	 * @return the treeId
-	 */
-	public Integer getTreeId() {
-		return treeId;
+
+	public Integer getTrinId() {
+		return trinId;
 	}
-	/**
-	 * @param treeId the treeId to set
-	 */
-	public void setTreeId(Integer treeId) {
-		this.treeId = treeId;
+	public void setTrinId(Integer trinId) {
+		this.trinId = trinId;
 	}
 	/**
 	 * @return the name

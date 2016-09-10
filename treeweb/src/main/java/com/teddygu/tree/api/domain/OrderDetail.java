@@ -22,7 +22,7 @@ public class OrderDetail {
 			@Parameter(name = "initial_value", value = "1000"),
 			@Parameter(name = "increment_size", value = "10")
 		})
-	private long oddeId;
+	private Long oddeId;
 	@Column(name = "NAME", nullable = false, unique = false)
 	private String name;
 	@Column(name = "QUANTITY", nullable = false, unique = false)
@@ -32,13 +32,13 @@ public class OrderDetail {
 	/**
 	 * @return the oddeId
 	 */
-	public long getOddeId() {
+	public Long getOddeId() {
 		return oddeId;
 	}
 	/**
 	 * @param oddeId the oddeId to set
 	 */
-	public void setOddeId(long oddeId) {
+	public void setOddeId(Long oddeId) {
 		this.oddeId = oddeId;
 	}
 	/**

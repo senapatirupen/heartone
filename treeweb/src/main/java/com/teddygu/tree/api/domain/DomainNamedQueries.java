@@ -8,5 +8,5 @@ package com.teddygu.tree.api.domain;
  *
  */
 public class DomainNamedQueries {
-	public static final String PERSON_LIST="select p from Person p";
+	public static final String PERSON_LIST="from Person";
 }

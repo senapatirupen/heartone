@@ -38,6 +38,7 @@ http://www.springframework.org/schema/jee
 		<property name="jpaProperties">
 			<props>
 				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<!-- <prop key="hibernate.hbm2ddl.auto">create</prop> -->
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
 				<prop key="hibernate.show_sql">true</prop>
 				<prop key="hibernate.format_sql">true</prop>
@@ -67,7 +68,13 @@ http://www.springframework.org/schema/jee
 
 		<bean id="personDao" class="com.teddygu.tree.api.dao.PersonDaoImpl">
 </bean>
+<bean id="personService" class="com.teddygu.tree.api.service.PersonServiceImpl">
+</bean>
+<context:annotation-config/>
 <context:component-scan base-package="com.teddygu.tree.api.service"></context:component-scan>
+<!-- <context:component-scan base-package="com.teddygu.tree.api.web.controller"></context:component-scan>
+<context:component-scan base-package="com.teddygu.tree.api.web.rest.controller"></context:component-scan> -->
+<context:component-scan base-package="com.teddygu.tree.api.dao"></context:component-scan>
 
 
 </beans>

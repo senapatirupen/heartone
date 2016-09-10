@@ -45,9 +45,9 @@ public class PersonDaoImpl implements PersonDao{
 	@PersistenceContext(unitName="treeweb")
 	private EntityManager entityManager;
 
-	public void save(Person person) {
-		// TODO Auto-generated method stub
-
+	public Boolean save(Person person) {
+		
+		return null;
 	}
 
 	public Person findByName(String name) {
@@ -62,18 +62,17 @@ public class PersonDaoImpl implements PersonDao{
 
 	@Transactional(value = "transactionManager",propagation = Propagation.REQUIRED)
 	public Collection<Person> list() {
-		List<Person> personList = entityManager.createQuery("FROM Person").getResultList();
-//		List<Person> personList = emf.createEntityManager().createQuery("FROM Person").getResultList();
+		List<Person> personList = entityManager.createQuery("from Person").getResultList();
 		if(!CollectionUtils.isEmpty(personList)){
 			logger.info("we get the personList");
-			return personList;
+//			return personList;
 		}
-		List<Person> personLists = entityManager.createNativeQuery("Person.list").getResultList();
-//		List<Person> personLists = emf.createEntityManager().createNativeQuery("Person.list").getResultList();
+		List<Person> personLists = entityManager.createNamedQuery("Person.list").getResultList();
 		if(!CollectionUtils.isEmpty(personList)){
 			logger.info("we get the personLists");
+			return personLists;
 		}
-		return personLists;
+		return null;
 	}
 
 	public void delete(Person person) {
