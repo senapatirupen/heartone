@@ -1,0 +1,12 @@
+com\nhpost\post\dao\impl\PostInitDaoImpl.class
+com\nhpost\post\domain\Post.class
+com\nhpost\post\web\model\ViewPost.class
+com\nhpost\post\service\impl\InitServiceImpl.class
+com\nhpost\post\service\InitService.class
+com\nhpost\post\domain\PostProperty.class
+com\nhpost\post\domain\PostRating.class
+com\nhpost\post\web\model\CreatePost.class
+com\nhpost\post\web\controller\HomeController.class
+com\nhpost\post\web\rest\controller\HomeController.class
+com\nhpost\post\common\exception\DataAccessException.class
+com\nhpost\post\dao\PostInitDao.class
