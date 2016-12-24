@@ -74,3 +74,7 @@ mvn tomcat7:undeploy
 
 
 mvn tomcat:run -Dmaven.tomcat.port=8081
+
+Run Spring MVC application on debug mode
+----------------------------------------
+Eclipse - Debug Configuration -> Remote Java Application -> new -> specify  project, host as localhost, port as 8000
